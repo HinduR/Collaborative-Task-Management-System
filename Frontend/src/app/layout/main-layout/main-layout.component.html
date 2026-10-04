@@ -1,0 +1,19 @@
+<div class="application-layout">
+  <app-header
+    [applicationName]="applicationName"
+    [userName]="userName"
+    (sidebarToggle)="onSidebarToggle()"
+    (logout)="onLogout()"
+  />
+
+  <div class="application-layout__body">
+    <app-sidebar
+      [collapsed]="isSidebarCollapsed"
+      [isSystemAdmin]="isSystemAdmin"
+    />
+
+    <main class="application-layout__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

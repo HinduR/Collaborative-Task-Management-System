@@ -1,0 +1,228 @@
+<section class="task-filter">
+  <div class="filter-toolbar">
+    <app-button
+      buttonId="back-to-board-button"
+      label="Back to Board"
+      icon="pi pi-arrow-left"
+      severity="secondary"
+      (buttonClick)="onBackToBoard()"
+    />
+
+    <app-button
+      buttonId="toggle-task-filter"
+      [label]="
+        activeFilterCount > 0
+          ? 'Filters (' + activeFilterCount + ')'
+          : 'Filters'
+      "
+      icon="pi pi-filter"
+      (buttonClick)="toggleFilters()"
+    />
+  </div>
+
+  @if (showFilters) {
+    <div class="filter-panel">
+      <div class="filter-panel__header">
+        <div>
+          <h2>Filter tasks</h2>
+          <p>Match tasks using one or more conditions.</p>
+        </div>
+
+        <app-button
+          buttonId="add-task-filter"
+          label="Add condition"
+          icon="pi pi-plus"
+          [disabled]="isLoading"
+          (buttonClick)="addFilter()"
+        />
+      </div>
+
+      @if (conditions.length === 0) {
+        <div class="empty-filter">
+          No conditions added.
+        </div>
+      }
+
+      <div class="filter-conditions">
+        @for (
+          condition of conditions;
+          track $index;
+          let index = $index
+        ) {
+          <div class="filter-condition">
+            <div class="logic-control">
+              @if (index === 0) {
+                <span class="where-label">Where</span>
+              } @else {
+                <app-dropdown
+                  [dropdownId]="'filter-logic-' + index"
+                  placeholder="Logic"
+                  [options]="logicalOperatorOptions"
+                  [value]="condition.logicalOperator"
+                  [disabled]="isLoading"
+                  (valueChange)="
+                    onLogicalOperatorChange(condition, $event)
+                  "
+                />
+              }
+            </div>
+
+            <app-dropdown
+              [dropdownId]="'filter-field-' + index"
+              placeholder="Select field"
+              [options]="filterFields"
+              [value]="condition.field"
+              [disabled]="isLoading"
+              (valueChange)="
+                onFilterFieldChange(condition, $event)
+              "
+            />
+
+            <app-dropdown
+              [dropdownId]="'filter-operator-' + index"
+              placeholder="Select operator"
+              [options]="getOperators(condition.field)"
+              [value]="condition.operator"
+              [disabled]="isLoading"
+              (valueChange)="
+                onFilterOperatorChange(condition, $event)
+              "
+            />
+
+            <app-dropdown
+              [dropdownId]="'filter-value-' + index"
+              placeholder="Select value"
+              [options]="getValueOptions(condition.field)"
+              [value]="condition.value"
+              [disabled]="isLoading"
+              (valueChange)="
+                onFilterValueChange(condition, $event)
+              "
+            />
+
+            <app-button
+              [buttonId]="'remove-filter-' + index"
+              label=""
+              icon="pi pi-times"
+              [disabled]="isLoading"
+              (buttonClick)="removeFilter(index)"
+            />
+          </div>
+        }
+      </div>
+
+      <div class="filter-panel__actions">
+        <app-button
+          buttonId="clear-task-filters"
+          label="Clear"
+          [disabled]="isLoading"
+          (buttonClick)="clearFilters()"
+        />
+
+        <app-button
+          buttonId="apply-task-filters"
+          label="Apply"
+          icon="pi pi-check"
+          [loading]="isLoading"
+          (buttonClick)="applyFilters()"
+        />
+      </div>
+    </div>
+  }
+</section>
+
+@if (errorMessage) {
+  <div class="error-message" role="alert">
+    <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+}
+
+<section class="task-results">
+  <div class="result-heading">
+    <div>
+      <h2>Tasks</h2>
+
+      @if (!isLoading) {
+        <p>
+          Showing {{ firstItemNumber }}–{{ lastItemNumber }}
+          of {{ totalCount }}
+        </p>
+      }
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="task-state">
+      <i
+        class="pi pi-spin pi-spinner"
+        aria-hidden="true"
+      ></i>
+      <span>Loading tasks...</span>
+    </div>
+  } @else if (tasks.length === 0) {
+    <div class="task-state">
+      <i class="pi pi-inbox" aria-hidden="true"></i>
+      <span>No tasks found.</span>
+    </div>
+  } @else {
+    <div class="task-list">
+      @for (task of tasks; track task.id) {
+        <article class="task-item">
+          <div class="task-icon">
+            <i
+              class="pi pi-check-square"
+              aria-hidden="true"
+            ></i>
+          </div>
+
+          <div class="task-content">
+            <h3>{{ task.title }}</h3>
+
+            <p class="task-description">
+              {{
+                task.description ||
+                  "No description provided."
+              }}
+            </p>
+
+            <p class="created-by">
+              Assigned to
+              <span>
+                {{ task.assigneeName || "Unassigned" }}
+              </span>
+            </p>
+          </div>
+        </article>
+      }
+    </div>
+
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <span>
+          Page {{ pageNumber }} of {{ totalPages }}
+        </span>
+
+        <div class="pagination-actions">
+          <app-button
+            buttonId="previous-task-page-button"
+            label="Previous"
+            icon="pi pi-chevron-left"
+            [disabled]="pageNumber === 1 || isLoading"
+            (buttonClick)="previousPage()"
+          />
+
+          <app-button
+            buttonId="next-task-page-button"
+            label="Next"
+            icon="pi pi-chevron-right"
+            [disabled]="
+              pageNumber === totalPages || isLoading
+            "
+            (buttonClick)="nextPage()"
+          />
+        </div>
+      </div>
+    }
+  }
+</section>

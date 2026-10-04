@@ -1,0 +1,162 @@
+:host {
+  display: block;
+}
+
+.project-page {
+  min-height: 100%;
+  padding: 2rem;
+  background: var(--app-background-color);
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0.35rem 0 0.5rem;
+    font-size: 1.75rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--app-secondary-text-color);
+  }
+}
+
+.page-eyebrow {
+  color: var(--app-primary-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+}
+
+app-card {
+  display: block;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid var(--app-primary-color);
+    outline-offset: 3px;
+    border-radius: 0.75rem;
+  }
+}
+
+.project-card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 4rem;
+}
+
+.project-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--app-primary-color);
+  background: var(--app-primary-light-color);
+  border-radius: 0.75rem;
+
+  i {
+    font-size: 1.35rem;
+  }
+}
+
+.access-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.assigned {
+  color: var(--app-success-color);
+}
+
+.not-assigned {
+  color: var(--app-secondary-text-color);
+}
+
+.project-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.loading-container,
+.empty-state {
+  display: flex;
+  min-height: 18rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-container {
+  gap: 0.75rem;
+  color: var(--app-secondary-text-color);
+}
+
+.loading-spinner {
+  color: var(--app-primary-color);
+  font-size: 1.5rem;
+}
+
+.empty-state {
+  flex-direction: column;
+  text-align: center;
+
+  h2 {
+    margin: 1rem 0 0.4rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--app-secondary-text-color);
+  }
+}
+
+.empty-icon {
+  color: var(--app-primary-color);
+
+  i {
+    font-size: 2rem;
+  }
+}
+
+:host ::ng-deep {
+  .project-card {
+    height: 100%;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .assigned-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px var(--app-shadow-color);
+  }
+
+  .unassigned-card {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+}
+
+@media (max-width: 48rem) {
+  .project-page {
+    padding: 1.25rem;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}

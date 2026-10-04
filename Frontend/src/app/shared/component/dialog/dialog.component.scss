@@ -1,0 +1,73 @@
+:host {
+  display: contents;
+}
+
+.dialog-content {
+  width: 100%;
+  min-width: 0;
+}
+
+.dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.dialog-footer ::ng-deep app-button {
+  display: inline-flex;
+}
+
+.dialog-footer ::ng-deep .shared-button {
+  min-width: 6.5rem;
+  min-height: 2.35rem;
+  padding: 0.55rem 0.95rem;
+}
+
+:host ::ng-deep .p-dialog {
+  max-width: calc(100vw - 2rem);
+  border-radius: 0.75rem;
+}
+
+:host ::ng-deep .p-dialog-header {
+  padding: 1.25rem 1.5rem;
+  color: var(--app-text-color);
+  border-bottom: 0.0625rem solid var(--app-border-color);
+}
+
+:host ::ng-deep .p-dialog-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+:host ::ng-deep .p-dialog-content {
+  padding: 1.5rem;
+  color: var(--app-text-color);
+  background-color: var(--app-surface-color);
+}
+
+:host ::ng-deep .p-dialog-footer {
+  padding: 1rem 1.5rem;
+  background-color: var(--app-surface-color);
+  border-top: 0.0625rem solid var(--app-border-color);
+}
+
+@media (max-width: 36rem) {
+  :host ::ng-deep .p-dialog-header,
+  :host ::ng-deep .p-dialog-content,
+  :host ::ng-deep .p-dialog-footer {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .dialog-footer {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .dialog-footer ::ng-deep app-button,
+  .dialog-footer ::ng-deep .shared-button {
+    width: 100%;
+  }
+}

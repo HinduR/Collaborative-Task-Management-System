@@ -1,0 +1,37 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ApiGateway/ApiGateway.csproj" />
+    <Project Path="src/Shared.Authorization/Shared.Authorization.csproj" />
+    <Project Path="src/Shared.Common/Shared.Common.csproj" />
+    <Project Path="src/Shared.Cryptography/Shared.Cryptography.csproj" />
+    <Project Path="src/Shared.Exceptions/Shared.Exceptions.csproj" />
+    <Project Path="src/Shared.Grpc/Shared.Grpc.csproj" />
+    <Project Path="src/Shared.Logging/Shared.Logging.csproj" />
+    <Project Path="src/Shared.Redis/Shared.Redis.csproj" />
+    <Project Path="src/Shared.SignalR/Shared.SignalR.csproj" />
+  </Folder>
+  <Folder Name="/src/BoardTaskService/">
+    <Project Path="src/BoardTaskService/BoardTaskService.API/BoardTaskService.API.csproj" />
+    <Project Path="src/BoardTaskService/BoardTaskService.Application/BoardTaskService.Application.csproj" />
+    <Project Path="src/BoardTaskService/BoardTaskService.Domain/BoardTaskService.Domain.csproj" />
+    <Project Path="src/BoardTaskService/BoardTaskService.Infrastructure/BoardTaskService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/IdentityService/">
+    <Project Path="src/IdentityService/IdentityService.API/IdentityService.API.csproj" />
+    <Project Path="src/IdentityService/IdentityService.Application/IdentityService.Application.csproj" />
+    <Project Path="src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj" />
+    <Project Path="src/IdentityService/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/MetadataService/">
+    <Project Path="src/MetadataService/MetadataService.API/MetadataService.API.csproj" />
+    <Project Path="src/MetadataService/MetadataService.Application/MetadataService.Application.csproj" />
+    <Project Path="src/MetadataService/MetadataService.Domain/MetadataService.Domain.csproj" />
+    <Project Path="src/MetadataService/MetadataService.Infrastructure/MetadataService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/BoardTaskService/">
+    <Project Path="tests/BoardTaskService/ServiceUnitTests/BoardTaskService.ServiceUnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/IdentityService/">
+    <Project Path="tests/IdentityService/ServiceUnitTests/IdentityService.ServiceUnitTests.csproj" />
+  </Folder>
+</Solution>

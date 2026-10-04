@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package metadata.v1;
+
+option csharp_namespace = "Shared.Grpc.Proto.Metadata";
+
+service MetadataLookupService {
+  rpc GetRefTermById (
+      GetRefTermByIdRequest)
+      returns (GetRefTermResponse);
+
+  rpc GetRefTermByKey (
+      GetRefTermByKeyRequest)
+      returns (GetRefTermResponse);
+
+  rpc GetRefTermListByRefSetKey (
+      GetRefTermListByRefSetKeyRequest)
+      returns (GetRefTermListResponse);
+}
+
+message GetRefTermByIdRequest {
+  string ref_term_id = 1;
+}
+
+message GetRefTermByKeyRequest {
+  string ref_term_key = 1;
+}
+
+message GetRefTermResponse {
+  string id = 1;
+  string ref_term_key = 2;
+  string description = 3;
+}
+
+message GetRefTermListByRefSetKeyRequest {
+  string ref_set_key = 1;
+}
+
+message GetRefTermListResponse {
+  repeated RefTermItem ref_term_list = 1;
+}
+
+message RefTermItem {
+  string id = 1;
+  string ref_term_key = 2;
+  string description = 3;
+}

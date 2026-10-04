@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.application-layout {
+  display: grid;
+  grid-template-rows: 3.5rem minmax(0, 1fr);
+  min-height: 100dvh;
+  color: var(--app-text-color);
+  background: var(--app-background-color);
+}
+
+.application-layout__body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 0;
+  background: var(--app-background-color);
+}
+
+.application-layout__content {
+  min-width: 0;
+  padding: 1.25rem;
+  overflow: auto;
+  color: var(--app-text-color);
+  background: var(--app-background-color);
+}

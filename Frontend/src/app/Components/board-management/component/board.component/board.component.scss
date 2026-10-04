@@ -1,0 +1,399 @@
+.board-page {
+  min-height: 100%;
+  padding: 1.5rem;
+  background: var(--color-slate-25);
+}
+
+.board-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.board-heading-section {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.board-heading {
+  min-width: 0;
+}
+
+:host ::ng-deep .back-button {
+  width: 2.25rem;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  margin-top: 0.15rem;
+  padding: 0;
+  border: 1px solid var(--color-slate-200);
+  border-radius: 0.5rem;
+  color: var(--color-slate-600);
+  background: var(--color-white);
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    color: var(--color-blue-600);
+    border-color: var(--color-blue-200);
+    background: var(--color-blue-50);
+  }
+}
+
+.board-page-title {
+  margin: 0;
+  color: var(--color-slate-900);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.board-page-description {
+  margin: 0.35rem 0 0;
+  color: var(--color-slate-500);
+  font-size: 0.9rem;
+}
+
+/* Compact cards instead of full-width list items */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 13.5rem));
+  align-items: stretch;
+  gap: 1rem;
+}
+
+:host ::ng-deep .board-card {
+  width: 13.5rem;
+  min-height: 12.5rem;
+  border: 1px solid var(--color-slate-200);
+  border-radius: 0.75rem;
+  background: var(--color-white);
+  box-shadow: 0 2px 8px var(--shadow-sm);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+:host ::ng-deep .board-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-slate-300);
+  box-shadow: 0 6px 16px var(--shadow-md);
+}
+
+:host ::ng-deep .board-card .p-card-body,
+:host ::ng-deep .board-card .p-card-content {
+  height: 100%;
+  padding: 0;
+}
+
+.board-card-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 12.5rem;
+  padding: 0.9rem;
+}
+
+.board-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.board-card-project {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.board-card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.board-icon {
+  display: grid;
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 0.5rem;
+  color: var(--color-blue-600);
+  background: var(--color-blue-50);
+  font-size: 0.9rem;
+}
+
+.project-name {
+  overflow: hidden;
+  color: var(--color-slate-500);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.board-details {
+  margin-top: 1rem;
+}
+
+.board-name {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--color-slate-800);
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Keep the button at the bottom of every card */
+.board-card-content > app-button {
+  display: block;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+:host ::ng-deep .board-icon-button {
+  width: 1.85rem;
+  min-width: 1.85rem;
+  height: 1.85rem;
+  min-height: 1.85rem;
+  padding: 0;
+  border: 1px solid var(--app-transparent-color);
+  border-radius: 0.45rem;
+  background: var(--app-transparent-color);
+  color: var(--color-slate-500);
+  box-shadow: none;
+}
+
+:host ::ng-deep .board-icon-button .shared-button-icon {
+  font-size: 0.78rem;
+}
+
+:host ::ng-deep .board-edit-button:hover:not(:disabled) {
+  border-color: var(--color-blue-200);
+  background: var(--color-blue-50);
+  color: var(--color-blue-600);
+}
+
+:host ::ng-deep .board-delete-button:hover:not(:disabled) {
+  border-color: var(--color-red-200);
+  background: var(--color-red-50);
+  color: var(--color-red-600);
+}
+
+:host ::ng-deep .board-icon-button:disabled {
+  opacity: 0.45;
+}
+
+/* Smaller Open Board button */
+:host ::ng-deep .board-card app-button .p-button {
+  width: 100%;
+  justify-content: center;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+:host ::ng-deep .board-card app-button .p-button-icon {
+  font-size: 0.7rem;
+}
+
+.board-loading-state,
+.board-error-state,
+.empty-state {
+  display: flex;
+  min-height: 15rem;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: var(--color-slate-500);
+  text-align: center;
+}
+
+.board-error-state {
+  color: var(--color-red-700);
+}
+
+.board-error-state p,
+.empty-state p {
+  margin: 0;
+}
+
+.empty-state-icon {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-blue-600);
+  background: var(--color-blue-50);
+  font-size: 1.25rem;
+}
+
+.empty-state h2 {
+  margin: 0;
+  color: var(--color-slate-800);
+  font-size: 1.15rem;
+}
+
+.board-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+:host ::ng-deep .dialog-actions .shared-button {
+  min-width: 6.5rem;
+  min-height: 2.35rem;
+  padding: 0.55rem 0.95rem;
+}
+
+.board-name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  label {
+    color: var(--color-slate-700);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--color-slate-300);
+    border-radius: 0.5rem;
+    color: var(--color-slate-800);
+    outline: none;
+
+    &:focus {
+      border-color: var(--color-blue-600);
+      box-shadow: 0 0 0 3px var(--focus-blue-shadow);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background: var(--color-slate-100);
+    }
+  }
+}
+
+.workflow-section-heading {
+  h3 {
+    margin: 0;
+    color: var(--color-slate-800);
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.3rem 0 0;
+    color: var(--color-slate-500);
+    font-size: 0.8rem;
+  }
+}
+
+.validation-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--color-red-600);
+  font-size: 0.8rem;
+}
+
+.board-saving-state {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-slate-600);
+  font-size: 0.85rem;
+}
+
+.delete-board-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+
+  > i {
+    margin-top: 0.15rem;
+    color: var(--color-red-600);
+    font-size: 1.4rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--color-slate-800);
+    font-weight: 600;
+  }
+
+  small {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-slate-500);
+  }
+}
+
+.delete-board-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .board-page {
+    padding: 1rem;
+  }
+
+  .board-page-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .board-heading-section {
+    align-items: flex-start;
+  }
+
+  .board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  :host ::ng-deep .board-card {
+    width: 100%;
+    min-height: 11rem;
+  }
+
+  .board-card-content {
+    min-height: 11rem;
+  }
+
+  .dialog-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  :host ::ng-deep .dialog-actions app-button,
+  :host ::ng-deep .dialog-actions .shared-button {
+    width: 100%;
+  }
+}

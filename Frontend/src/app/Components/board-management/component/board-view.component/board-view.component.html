@@ -1,0 +1,382 @@
+<section class="board-view-page">
+  @if (isLoading) {
+    <div class="board-state" role="status" aria-live="polite">
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+
+      <p>Loading board...</p>
+    </div>
+  } @else if (loadErrorMessage) {
+    <div class="board-state board-state--error" role="alert">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+      <h2>Unable to load board</h2>
+
+      <p>{{ loadErrorMessage }}</p>
+
+      <div class="state-actions">
+        @if (board) {
+          <app-button
+            buttonId="retry-load-board-button"
+            label="Try Again"
+            icon="pi pi-refresh"
+            (buttonClick)="loadBoardTasks()"
+          />
+        }
+
+        <app-button
+          buttonId="error-back-to-boards-button"
+          label="Back to Boards"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          (buttonClick)="onBackToBoards()"
+        />
+      </div>
+    </div>
+  } @else if (board) {
+    <header class="board-view-header">
+      <div class="board-heading-section">
+        <app-button
+          buttonId="back-to-boards-button"
+          label=""
+          icon="pi pi-arrow-left"
+          ariaLabel="Back to boards"
+          styleClass="back-button"
+          (buttonClick)="onBackToBoards()"
+        />
+
+        <div class="board-heading-content">
+          <div class="board-project-name">Round Table</div>
+
+          <h1 class="board-title">
+            {{ board.name }}
+          </h1>
+        </div>
+      </div>
+      <div class="board-actions">
+        @if (realtimeConnected()) {
+          <app-user-presence [users]="activeUsers()" />
+        } @else {
+          <span class="realtime-status">
+            <i class="pi pi-spin pi-spinner"></i>
+            Reconnecting...
+          </span>
+        }
+        <app-button
+          buttonId="open-task-query-button"
+          label="Task Query"
+          icon="pi pi-filter"
+          severity="secondary"
+          (buttonClick)="openTaskQuery()"
+        />
+        @if (board.isBoardOwner) {
+          <app-button
+            buttonId="manage-board-members-button"
+            label="Manage Members"
+            icon="pi pi-users"
+            severity="secondary"
+            (buttonClick)="openBoardMembersDialog()"
+          />
+
+          <app-button
+            buttonId="manage-columns-button"
+            label="Manage Columns"
+            icon="pi pi-columns"
+            (buttonClick)="onAddColumn()"
+          />
+        }
+      </div>
+    </header>
+
+    @if (actionErrorMessage) {
+      <div class="board-action-error" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+        {{ actionErrorMessage }}
+      </div>
+    }
+
+    @if (board.workflowColumns.length > 0) {
+      <div class="workflow-board">
+        @for (column of board.workflowColumns; track column.id) {
+          <section class="workflow-column">
+            <header class="workflow-column-header">
+              <div class="workflow-column-heading">
+                <h2>{{ column.name }}</h2>
+
+                <span class="task-count" [attr.aria-label]="column.tasks.length + ' tasks'">
+                  {{ column.tasks.length }}
+                </span>
+              </div>
+            </header>
+
+            <div
+              class="workflow-column-body"
+              cdkDropList
+              [id]="'workflow-column-' + column.id"
+              [cdkDropListData]="column"
+              [cdkDropListConnectedTo]="workflowDropListIds"
+              (cdkDropListDropped)="onTaskDrop($event)"
+            >
+              @for (task of column.tasks; track task.id) {
+                <app-card
+                  cdkDrag
+                  [cdkDragData]="task"
+                  [cdkDragDisabled]="movingTaskIds.has(task.id)"
+                  styleClass="task-card task-card--clickable"
+                  role="button"
+                  tabindex="0"
+                  [type]="task.taskType"
+                  [attr.aria-label]="'Open task ' + task.title"
+                  (click)="onOpenTask(task.id)"
+                  (keydown.enter)="onOpenTask(task.id)"
+                  (keydown.space)="onOpenTask(task.id); $event.preventDefault()"
+                >
+                  <article class="task-content">
+                    <div class="task-header">
+                      <span class="task-type">
+                        {{ task.taskType }}
+                      </span>
+
+                      <div class="task-header-actions">
+                        <span [class]="'task-priority ' + getPriorityClass(task.priority)">
+                          {{ task.priority }}
+                        </span>
+
+                        @if (task.isTaskOwner) {
+                          <app-button
+                            [buttonId]="'edit-task-button-' + task.id"
+                            label=""
+                            icon="pi pi-pencil"
+                            [ariaLabel]="'Edit task ' + task.title"
+                            styleClass="task-edit-button"
+                            [disabled]="loadingTaskId !== null || isDeletingTask"
+                            [loading]="loadingTaskId === task.id"
+                            (buttonClick)="onEditTask($event, task.id)"
+                          />
+
+                          <app-button
+                            [buttonId]="'delete-task-button-' + task.id"
+                            label=""
+                            icon="pi pi-trash"
+                            [ariaLabel]="'Delete task ' + task.title"
+                            styleClass="task-delete-button"
+                            [disabled]="loadingTaskId !== null || isDeletingTask"
+                            (buttonClick)="openDeleteTaskDialog($event, task)"
+                          />
+                        }
+                      </div>
+                    </div>
+
+                    <h3 class="task-title">
+                      {{ task.title }}
+                    </h3>
+
+                    @if (task.description) {
+                      <p class="task-description">
+                        {{ task.description }}
+                      </p>
+                    }
+
+                    <footer class="task-footer">
+                      <span
+                        class="assignee-avatar"
+                        [attr.title]="task.assigneeName || 'Unassigned'"
+                      >
+                        {{ getAssigneeInitial(task.assigneeName) }}
+                      </span>
+
+                      <span class="assignee-name">
+                        {{ task.assigneeName || 'Unassigned' }}
+                      </span>
+
+                      @if (task.isTaskOwner) {
+                        <span class="task-owner-badge"> Owner </span>
+                      }
+                    </footer>
+                  </article>
+                </app-card>
+              } @empty {
+                <div class="empty-column">
+                  <i class="pi pi-inbox" aria-hidden="true"></i>
+
+                  <p>No tasks in this column</p>
+                </div>
+              }
+            </div>
+
+            <app-button
+              [buttonId]="'add-task-button-' + column.id"
+              label="Add Task"
+              icon="pi pi-plus"
+              styleClass="add-task-button"
+              (buttonClick)="onAddTask(column.id)"
+            />
+          </section>
+        }
+      </div>
+    } @else {
+      <div class="board-state">
+        <i class="pi pi-columns" aria-hidden="true"></i>
+
+        <h2>No workflow columns</h2>
+
+        @if (board.isBoardOwner) {
+          <p>Add the first workflow column before creating tasks.</p>
+
+          <app-button
+            buttonId="empty-add-column-button"
+            label="Add Workflow Column"
+            icon="pi pi-plus"
+            (buttonClick)="onAddColumn()"
+          />
+        } @else {
+          <p>This board does not have any workflow columns yet.</p>
+        }
+      </div>
+    }
+
+    @if (board.isBoardOwner) {
+      <app-dialog
+        dialogId="manage-workflow-columns-dialog"
+        title="Manage Workflow Columns"
+        width="38rem"
+        [(visible)]="isWorkflowColumnDialogVisible"
+        (closed)="closeWorkflowColumnDialog()"
+      >
+        <app-workflow-column
+          [columns]="board.workflowColumns"
+          [roleOptions]="roleOptions"
+          [disabled]="isLoadingRoles || isSavingWorkflowColumns"
+          [maximumColumnCount]="maximumColumnCount"
+          (saveChanges)="saveWorkflowColumns($event)"
+          (cancelled)="closeWorkflowColumnDialog()"
+        />
+      </app-dialog>
+
+      <app-dialog
+        dialogId="manage-board-members-dialog"
+        title="Manage Board Members"
+        width="34rem"
+        [(visible)]="isBoardMembersDialogVisible"
+        (closed)="closeBoardMembersDialog()"
+      >
+        <section class="board-members-manager">
+          <div class="board-members-heading">
+            <h3>Board Members</h3>
+
+            <p>Select users from this project who can access the board.</p>
+          </div>
+
+          @if (isLoadingMembers) {
+            <div class="members-loading" role="status" aria-live="polite">
+              <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+
+              Loading project users...
+            </div>
+          } @else {
+            <app-multi-select
+              inputId="board-member-selection"
+              placeholder="Select board members"
+              [options]="boardMemberOptions"
+              [control]="boardMembersControl"
+              [disabled]="isSavingMembers"
+            />
+          }
+
+          @if (actionErrorMessage) {
+            <p class="validation-message" role="alert">
+              {{ actionErrorMessage }}
+            </p>
+          }
+
+          <div class="board-members-actions">
+            <app-button
+              buttonId="cancel-board-members-button"
+              label="Cancel"
+              severity="secondary"
+              [disabled]="isSavingMembers"
+              (buttonClick)="closeBoardMembersDialog()"
+            />
+
+            <app-button
+              buttonId="save-board-members-button"
+              [label]="isSavingMembers ? 'Saving...' : 'Save Members'"
+              [disabled]="isLoadingMembers || isSavingMembers"
+              (buttonClick)="saveBoardMembers()"
+            />
+          </div>
+        </section>
+      </app-dialog>
+    }
+
+    @if (isCreateTaskPanelVisible && selectedWorkflowColumnId) {
+      <app-task-panel
+        [boardId]="board.id"
+        [selectedWorkflowColumnId]="selectedWorkflowColumnId"
+        [workflowColumnOptions]="workflowColumnOptions"
+        [assigneeOptions]="taskAssigneeOptions"
+        (taskCreated)="onTaskCreated($event)"
+        (cancelled)="closeCreateTaskPanel()"
+      />
+    }
+    @if (isEditTaskPanelVisible && selectedTask) {
+      <app-task-panel
+        [boardId]="board.id"
+        [task]="selectedTask"
+        [selectedWorkflowColumnId]="selectedWorkflowColumnId"
+        [workflowColumnOptions]="workflowColumnOptions"
+        [assigneeOptions]="taskAssigneeOptions"
+        [mode]="taskPanelMode"
+        (taskUpdated)="onTaskUpdated($event)"
+        (cancelled)="closeEditTaskPanel()"
+      />
+    }
+
+    @if (isDeleteTaskDialogVisible && taskToDelete) {
+      <app-dialog
+        dialogId="delete-task-dialog"
+        title="Delete Task"
+        width="28rem"
+        [(visible)]="isDeleteTaskDialogVisible"
+        [closable]="!isDeletingTask"
+        (closed)="closeDeleteTaskDialog()"
+      >
+        <div class="delete-task-content">
+          <i
+            class="pi pi-exclamation-triangle"
+            aria-hidden="true"
+          ></i>
+
+          <div>
+            <p>
+              Are you sure you want to delete
+              <strong>{{ taskToDelete.title }}</strong>?
+            </p>
+
+            <small>This action cannot be undone.</small>
+          </div>
+        </div>
+
+        <div class="delete-task-actions">
+          <app-button
+            buttonId="cancel-delete-task-button"
+            label="Cancel"
+            severity="secondary"
+            [disabled]="isDeletingTask"
+            (buttonClick)="closeDeleteTaskDialog()"
+          />
+
+          <app-button
+            buttonId="confirm-delete-task-button"
+            label="Delete"
+            icon="pi pi-trash"
+            severity="danger"
+            [loading]="isDeletingTask"
+            [disabled]="isDeletingTask"
+            (buttonClick)="confirmDeleteTask()"
+          />
+        </div>
+      </app-dialog>
+    }
+  }
+</section>

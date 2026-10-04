@@ -1,0 +1,32 @@
+.shared-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.625rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.shared-button-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.shared-button-label {
+  white-space: nowrap;
+}
+
+.shared-button-full-width {
+  width: 100%;
+}
+
+.shared-button-icon-only {
+  width: 2.5rem;
+  padding-inline: 0;
+}
+
+.shared-button:disabled {
+  cursor: not-allowed;
+}

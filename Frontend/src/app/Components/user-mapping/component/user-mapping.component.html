@@ -1,0 +1,259 @@
+<main class="mapping-page">
+  <header class="page-header">
+    <span class="page-eyebrow">Administration</span>
+    <h1>User Mapping</h1>
+    <p>Manage project and role assignments for users.</p>
+  </header>
+
+  <section class="mapping-actions" aria-label="User mapping options">
+    <button
+      type="button"
+      class="mapping-option project-option"
+      (click)="openProjectMappingDialog()"
+    >
+      <span class="option-icon">
+        <i class="pi pi-folder" aria-hidden="true"></i>
+      </span>
+
+      <span class="option-content">
+        <strong>Project Mapping</strong>
+        <small> Assign one or more projects to a selected user. </small>
+      </span>
+
+      <i class="pi pi-arrow-right option-arrow" aria-hidden="true"></i>
+    </button>
+
+    <button
+      type="button"
+      class="mapping-option role-option"
+      (click)="openRoleMappingDialog()"
+    >
+      <span class="option-icon">
+        <i class="pi pi-users" aria-hidden="true"></i>
+      </span>
+
+      <span class="option-content">
+        <strong>Role Mapping</strong>
+        <small> Assign or replace the role of a selected user. </small>
+      </span>
+
+      <i class="pi pi-arrow-right option-arrow" aria-hidden="true"></i>
+    </button>
+  </section>
+</main>
+
+<app-dialog
+  dialogId="project-mapping-dialog"
+  title="User Project Mapping"
+  width="38rem"
+  [visible]="showProjectMappingDialog"
+  [closable]="!isSaving"
+  [closeOnEscape]="!isSaving"
+  [dismissableMask]="false"
+  (visibleChange)="onProjectDialogVisibilityChange($event)"
+>
+  @if (isLoading) {
+    <div class="loading-state" role="status">
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+
+      <span>Loading users and projects...</span>
+    </div>
+  } @else {
+    <form [formGroup]="mappingForm">
+      <div class="dialog-description">
+        Select a user and assign the projects they can access.
+      </div>
+
+      <div class="form-field">
+        <app-dropdown
+          dropdownId="project-user"
+          label="User"
+          placeholder="Select a user"
+          [options]="users"
+          [value]="mappingForm.controls.userId.value"
+          [required]="true"
+          [disabled]="isSaving"
+          [errorMessage]="
+            mappingForm.controls.userId.touched &&
+            mappingForm.controls.userId.invalid
+              ? 'Please select a user.'
+              : ''
+          "
+          (valueChange)="onProjectUserChange($event)"
+        />
+      </div>
+
+      <div class="form-field">
+        <div class="field-heading">
+          <span class="field-label">Projects</span>
+
+          @if (mappingForm.controls.projectIds.value.length > 0) {
+            <app-button
+              buttonId="clear-project-mapping-projects"
+              label="Clear all"
+              type="button"
+              styleClass="clear-button"
+              [disabled]="isSaving"
+              (buttonClick)="clearProjects()"
+            />
+          }
+        </div>
+
+        <app-multi-select
+          inputId="projects"
+          placeholder="Select projects"
+          [control]="mappingForm.controls.projectIds"
+          [options]="projects"
+          [disabled]="isSaving"
+          [loading]="isLoading"
+          [filter]="true"
+          [showClear]="true"
+          [hideLabel]="true"
+          selectedItemsLabel="{0} projects selected"
+          emptyMessage="No projects available"
+          emptyFilterMessage="No matching projects found"
+        />
+
+        <small class="field-help">
+          Leaving this empty will remove all project mappings for the selected
+          user.
+        </small>
+      </div>
+
+      @if (successMessage) {
+        <div class="feedback-message success-message" role="status">
+          <i class="pi pi-check-circle" aria-hidden="true"></i>
+
+          <span>{{ successMessage }}</span>
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="feedback-message error-message" role="alert">
+          <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
+    </form>
+  }
+
+  <div dialogFooter>
+    <app-button
+      buttonId="cancel-project-mapping"
+      label="Cancel"
+      type="button"
+      [disabled]="isSaving"
+      (buttonClick)="closeProjectMappingDialog()"
+    />
+
+    <app-button
+      buttonId="save-project-mapping"
+      label="Save Mapping"
+      type="button"
+      icon="pi pi-check"
+      [loading]="isSaving"
+      [disabled]="mappingForm.invalid || isLoading"
+      (buttonClick)="saveMapping()"
+    />
+  </div>
+</app-dialog>
+
+<app-dialog
+  dialogId="role-mapping-dialog"
+  title="User Role Mapping"
+  width="32rem"
+  [visible]="showRoleMappingDialog"
+  [closable]="!isRoleSaving"
+  [closeOnEscape]="!isRoleSaving"
+  [dismissableMask]="false"
+  (visibleChange)="onRoleDialogVisibilityChange($event)"
+>
+  @if (isLoading) {
+    <div class="loading-state" role="status">
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+
+      <span>Loading users and roles...</span>
+    </div>
+  } @else {
+    <form [formGroup]="roleMappingForm">
+      <div class="dialog-description">
+        Select a user and assign the appropriate role.
+      </div>
+
+      <div class="form-field">
+        <app-dropdown
+          dropdownId="role-user"
+          label="User"
+          placeholder="Select a user"
+          [options]="users"
+          [value]="roleMappingForm.controls.userId.value"
+          [required]="true"
+          [disabled]="isRoleSaving"
+          [errorMessage]="
+            roleMappingForm.controls.userId.touched &&
+            roleMappingForm.controls.userId.invalid
+              ? 'Please select a user.'
+              : ''
+          "
+          (valueChange)="onRoleUserChange($event)"
+        />
+      </div>
+
+      <div class="form-field">
+        <app-dropdown
+          dropdownId="role"
+          label="Role"
+          placeholder="Select a role"
+          [options]="roles"
+          [value]="roleMappingForm.controls.roleId.value"
+          [required]="true"
+          [disabled]="isRoleSaving"
+          [errorMessage]="
+            roleMappingForm.controls.roleId.touched &&
+            roleMappingForm.controls.roleId.invalid
+              ? 'Please select a role.'
+              : ''
+          "
+          (valueChange)="onRoleChange($event)"
+        />
+      </div>
+
+      @if (roleSuccessMessage) {
+        <div class="feedback-message success-message" role="status">
+          <i class="pi pi-check-circle" aria-hidden="true"></i>
+
+          <span>{{ roleSuccessMessage }}</span>
+        </div>
+      }
+
+      @if (roleErrorMessage) {
+        <div class="feedback-message error-message" role="alert">
+          <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+          <span>{{ roleErrorMessage }}</span>
+        </div>
+      }
+    </form>
+  }
+
+  <div dialogFooter>
+    <app-button
+      buttonId="cancel-role-mapping"
+      label="Cancel"
+      type="button"
+      [disabled]="isRoleSaving"
+      (buttonClick)="closeRoleMappingDialog()"
+    />
+
+    <app-button
+      buttonId="save-role-mapping"
+      label="Save Role"
+      type="button"
+      icon="pi pi-check"
+      [loading]="isRoleSaving"
+      [disabled]="roleMappingForm.invalid || isLoading"
+      (buttonClick)="saveRoleMapping()"
+    />
+  </div>
+</app-dialog>

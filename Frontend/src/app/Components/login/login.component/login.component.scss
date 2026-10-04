@@ -1,0 +1,82 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.login-page {
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-100);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 36px;
+  text-align: center;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-muted);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--login-card-shadow);
+}
+
+.app-logo {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-size: 19px;
+  font-weight: 700;
+  background: var(--color-login-primary);
+  border-radius: 50%;
+}
+
+h1 {
+  margin: 0;
+  color: var(--color-ink-800);
+  font-size: 26px;
+}
+
+.subtitle {
+  margin: 10px 0 28px;
+  color: var(--color-gray-500);
+  font-size: 14px;
+}
+
+:host ::ng-deep .google-button {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-gray-800);
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+:host ::ng-deep .google-button:hover:not(:disabled) {
+  background: var(--color-gray-50);
+}
+
+:host ::ng-deep .google-button:disabled {
+  color: var(--color-gray-400);
+  cursor: not-allowed;
+  background: var(--color-gray-50);
+}
+
+.help-text {
+  margin: 22px 0 0;
+  color: var(--color-gray-400);
+  font-size: 12px;
+}

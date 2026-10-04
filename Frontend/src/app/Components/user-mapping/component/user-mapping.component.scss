@@ -1,0 +1,254 @@
+:host {
+  display: block;
+  min-height: 100%;
+  color: var(--app-text-color);
+}
+
+.mapping-page {
+  min-height: 100%;
+  padding: 2rem;
+  background: var(--app-background-color);
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0.35rem 0 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: var(--app-secondary-text-color);
+    font-size: 0.95rem;
+  }
+}
+
+.page-eyebrow {
+  color: var(--app-primary-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mapping-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: 60rem;
+}
+
+.mapping-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 8.5rem;
+  padding: 1.5rem;
+  color: inherit;
+  text-align: left;
+  background: var(--app-surface-color);
+  border: 1px solid var(--app-border-color);
+  border-radius: 0.875rem;
+  box-shadow: 0 2px 8px var(--shadow-xs);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: var(--app-primary-color);
+    box-shadow: 0 10px 24px var(--shadow-md);
+    transform: translateY(-2px);
+
+    .option-arrow {
+      color: var(--app-primary-color);
+      transform: translateX(0.25rem);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid
+      color-mix(in srgb, var(--app-primary-color) 25%, var(--app-transparent-color));
+    outline-offset: 2px;
+  }
+}
+
+.option-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--app-primary-color);
+  background: var(--app-primary-light-color);
+  border-radius: 0.75rem;
+
+  i {
+    font-size: 1.35rem;
+  }
+}
+
+.option-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  strong {
+    font-size: 1.05rem;
+    font-weight: 650;
+  }
+
+  small {
+    color: var(--app-secondary-text-color);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+}
+
+.option-arrow {
+  flex: 0 0 auto;
+  color: var(--app-secondary-text-color);
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.dialog-description {
+  margin-bottom: 1.5rem;
+  padding: 0.875rem 1rem;
+  color: var(--app-secondary-text-color);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  background: var(--app-background-color);
+  border-left: 3px solid var(--app-primary-color);
+  border-radius: 0.375rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.35rem;
+}
+
+.field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+:host ::ng-deep .clear-button {
+  padding: 0;
+  color: var(--app-primary-color);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--app-transparent-color);
+  border: 0;
+  min-height: auto;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.field-help {
+  color: var(--app-secondary-text-color);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.feedback-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+  padding: 0.8rem 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  border: 1px solid;
+  border-radius: 0.5rem;
+
+  i {
+    margin-top: 0.1rem;
+  }
+}
+
+.success-message {
+  color: var(--color-green-800);
+  background: var(--color-green-50);
+  border-color: var(--color-green-200);
+}
+
+.error-message {
+  color: var(--color-red-800);
+  background: var(--color-red-50);
+  border-color: var(--color-red-200);
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 12rem;
+  color: var(--app-secondary-text-color);
+  font-size: 0.9rem;
+
+  i {
+    color: var(--app-primary-color);
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .mapping-page {
+    padding: 1.25rem;
+  }
+
+  .mapping-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .mapping-option {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .mapping-page {
+    padding: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .mapping-option {
+    align-items: flex-start;
+  }
+
+  .option-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+}

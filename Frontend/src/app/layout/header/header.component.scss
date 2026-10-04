@@ -1,0 +1,64 @@
+:host {
+  display: block;
+  height: 3.5rem;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 3.5rem;
+  padding: 0 1rem;
+
+  background: var(--p-surface-0);
+  border-bottom: 0.0625rem solid var(--p-surface-200);
+  box-shadow: 0 0.125rem 0.5rem var(--shadow-black-sm);
+}
+
+.header__start,
+.header__end,
+.header__brand {
+  display: flex;
+  align-items: center;
+}
+
+.header__start {
+  gap: 0.75rem;
+}
+
+.header__end {
+  gap: 0.75rem;
+}
+
+.header__brand {
+  color: var(--p-text-color);
+  text-decoration: none;
+}
+
+.header__application-name {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header__user-name {
+  color: var(--p-text-color);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (width <= 48rem) {
+  .header {
+    padding-inline: 0.75rem;
+  }
+
+  .header__user-name {
+    display: none;
+  }
+}

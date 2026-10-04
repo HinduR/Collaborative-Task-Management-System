@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package identity.v1;
+
+option csharp_namespace = "Shared.Grpc.Proto.Identity";
+
+service IdentityUserService {
+  rpc GetUserById (GetUserByIdRequest)
+      returns (GetUserByIdResponse);
+
+  rpc GetUserList (GetUserListRequest)
+      returns (GetUserListResponse);
+
+  rpc ValidateAccessToken (ValidateAccessTokenRequest)
+      returns (ValidateAccessTokenResponse);
+}
+
+message GetUserByIdRequest {
+  string user_id = 1;
+}
+
+message GetUserByIdResponse {
+  string id = 1;
+  string email = 2;
+  string display_name = 3;
+}
+
+message GetUserListRequest {
+  repeated string user_id_list = 1;
+}
+
+message GetUserListResponse {
+  repeated UserItem user_list = 1;
+}
+
+message UserItem {
+  string id = 1;
+  string email = 2;
+  string display_name = 3;
+}
+
+message ValidateAccessTokenRequest {
+  string access_token = 1;
+}
+
+message ValidateAccessTokenResponse {
+  bool is_valid = 1;
+}

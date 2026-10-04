@@ -1,0 +1,215 @@
+<section class="board-page">
+  <header class="board-page-header">
+    <div class="board-heading-section">
+      <app-button
+        buttonId="back-to-projects-button"
+        label=""
+        icon="pi pi-arrow-left"
+        ariaLabel="Back to projects"
+        styleClass="back-button"
+        (buttonClick)="onBackToProjects()"
+      />
+
+      <div class="board-heading">
+        <h1 class="board-page-title">Boards</h1>
+
+        <p class="board-page-description">
+          View and manage boards from your assigned projects.
+        </p>
+      </div>
+    </div>
+
+    <app-button
+      buttonId="create-board-button"
+      label="Create Board"
+      icon="pi pi-plus"
+      [disabled]="isLoadingBoards"
+      (buttonClick)="onCreateBoard()"
+    />
+  </header>
+
+  @if (isLoadingBoards) {
+    <div class="board-loading-state" role="status" aria-live="polite">
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+
+      <span>Loading boards...</span>
+    </div>
+  } @else if (boardListErrorMessage) {
+    <div class="board-error-state" role="alert">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+      <p>{{ boardListErrorMessage }}</p>
+
+      <app-button
+        buttonId="retry-load-boards-button"
+        label="Try Again"
+        icon="pi pi-refresh"
+        (buttonClick)="loadBoards()"
+      />
+    </div>
+  } @else if (boards.length > 0) {
+    <div class="board-grid">
+      @for (board of boards; track board.id) {
+        <app-card styleClass="board-card">
+          <div class="board-card-content">
+            <div class="board-card-header">
+              <div class="board-card-project">
+                <div class="board-icon">
+                  <i class="pi pi-th-large" aria-hidden="true"></i>
+                </div>
+
+                <span class="project-name"> Round Table </span>
+              </div>
+
+              @if (board.isBoardOwner) {
+                <div class="board-card-actions">
+                  <app-button
+                    [buttonId]="'edit-board-button-' + board.id"
+                    label=""
+                    icon="pi pi-pencil"
+                    [ariaLabel]="'Edit board ' + board.boardName"
+                    styleClass="board-icon-button board-edit-button"
+                    [disabled]="isLoadingBoards || isSavingBoard || isDeletingBoard"
+                    (buttonClick)="onEditBoard(board)"
+                  />
+
+                  <app-button
+                    [buttonId]="'delete-board-button-' + board.id"
+                    label=""
+                    icon="pi pi-trash"
+                    [ariaLabel]="'Delete board ' + board.boardName"
+                    styleClass="board-icon-button board-delete-button"
+                    [disabled]="isLoadingBoards || isSavingBoard || isDeletingBoard"
+                    (buttonClick)="openDeleteBoardDialog($event, board)"
+                  />
+                </div>
+              }
+            </div>
+
+            <div class="board-details">
+              <h2 class="board-name">
+                {{ board.boardName }}
+              </h2>
+            </div>
+            <app-button
+              [buttonId]="'open-board-button-' + board.id"
+              label="Open Board"
+              icon="pi pi-arrow-right"
+              (buttonClick)="onOpenBoard(board)"
+            />
+          </div>
+        </app-card>
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="pi pi-th-large" aria-hidden="true"></i>
+      </div>
+
+      <h2>No boards available</h2>
+    </div>
+  }
+
+  <app-dialog
+  dialogId="create-board-dialog"
+  [title]="boardDialogTitle"
+  width="32rem"
+  [(visible)]="isBoardDialogVisible"
+  (closed)="closeBoardDialog()"
+>
+  <section class="board-manager">
+    <div class="board-name-field">
+      <label for="create-board-name">Board name</label>
+
+      <input
+        id="create-board-name"
+        type="text"
+        maxlength="100"
+        autocomplete="off"
+        placeholder="Enter board name"
+        [(ngModel)]="boardName"
+        [disabled]="isSavingBoard"
+        (ngModelChange)="onBoardNameChange()"
+      />
+
+      @if (boardNameValidationMessage) {
+        <p class="validation-message" role="alert">
+          <i
+            class="pi pi-exclamation-circle"
+            aria-hidden="true"
+          ></i>
+
+          {{ boardNameValidationMessage }}
+        </p>
+      }
+    </div>
+
+    <div class="dialog-actions">
+      <app-button
+        buttonId="cancel-create-board-button"
+        label="Cancel"
+        [disabled]="isSavingBoard"
+        (buttonClick)="closeBoardDialog()"
+      />
+
+      <app-button
+        buttonId="save-board-button"
+        [label]="boardSaveButtonLabel"
+        [icon]="selectedBoardId ? 'pi pi-check' : 'pi pi-plus'"
+        [disabled]="
+          isSavingBoard || !boardName.trim()
+        "
+        (buttonClick)="saveBoard()"
+      />
+    </div>
+  </section>
+</app-dialog>
+
+@if (isDeleteBoardDialogVisible && boardToDelete) {
+  <app-dialog
+    dialogId="delete-board-dialog"
+    title="Delete Board"
+    width="28rem"
+    [(visible)]="isDeleteBoardDialogVisible"
+    [closable]="!isDeletingBoard"
+    (closed)="closeDeleteBoardDialog()"
+  >
+    <div class="delete-board-content">
+      <i
+        class="pi pi-exclamation-triangle"
+        aria-hidden="true"
+      ></i>
+
+      <div>
+        <p>
+          Are you sure you want to delete
+          <strong>{{ boardToDelete.boardName }}</strong>?
+        </p>
+
+        <small>This action cannot be undone.</small>
+      </div>
+    </div>
+
+    <div dialogFooter class="delete-board-actions">
+      <app-button
+        buttonId="cancel-delete-board-button"
+        label="Cancel"
+        severity="secondary"
+        [disabled]="isDeletingBoard"
+        (buttonClick)="closeDeleteBoardDialog()"
+      />
+
+      <app-button
+        buttonId="confirm-delete-board-button"
+        label="Delete"
+        icon="pi pi-trash"
+        severity="danger"
+        [loading]="isDeletingBoard"
+        [disabled]="isDeletingBoard"
+        (buttonClick)="confirmDeleteBoard()"
+      />
+    </div>
+  </app-dialog>
+}
+</section>

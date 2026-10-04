@@ -1,0 +1,90 @@
+<main class="project-page">
+  <header class="page-header">
+    <div>
+      <span class="page-eyebrow">Workspace</span>
+
+      <h1>Projects</h1>
+
+      <p>Select an assigned project to view its boards.</p>
+    </div>
+  </header>
+
+  @if (isLoading) {
+    <section
+      class="loading-container"
+      role="status"
+      aria-label="Loading projects"
+    >
+      <i class="pi pi-spin pi-spinner loading-spinner" aria-hidden="true"></i>
+
+      <span>Loading projects...</span>
+    </section>
+  } @else if (projects.length === 0) {
+    <section class="empty-state">
+      <span class="empty-icon">
+        <i class="pi pi-folder-open" aria-hidden="true"></i>
+      </span>
+
+      <h2>No projects available</h2>
+
+      <p>There are currently no active projects.</p>
+    </section>
+  } @else {
+    <section class="project-grid" aria-label="Available projects">
+      @for (project of projects; track project.id) {
+        <app-card
+          [title]="project.projectName"
+          [subtitle]="
+            project.isAssigned ? 'Assigned project' : 'Access unavailable'
+          "
+          [styleClass]="
+            project.isAssigned
+              ? 'project-card assigned-card'
+              : 'project-card unassigned-card'
+          "
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="
+            project.projectName +
+            (project.isAssigned ? ', assigned project' : ', access unavailable')
+          "
+          (click)="openProject(project)"
+          (keydown)="handleKeyDown($event, project)"
+        >
+          <div class="project-card-content">
+            <div class="project-icon">
+              <i class="pi pi-folder" aria-hidden="true"></i>
+            </div>
+
+            @if (project.isAssigned) {
+              <span class="access-status assigned">
+                <i class="pi pi-check-circle" aria-hidden="true"></i>
+
+                Assigned
+              </span>
+            } @else {
+              <span class="access-status not-assigned">
+                <i class="pi pi-lock" aria-hidden="true"></i>
+
+                Not assigned
+              </span>
+            }
+          </div>
+
+          <div card-footer class="project-footer">
+            <span>
+              {{ project.isAssigned ? "View boards" : "Access required" }}
+            </span>
+
+            <i
+              class="pi"
+              [class.pi-arrow-right]="project.isAssigned"
+              [class.pi-lock]="!project.isAssigned"
+              aria-hidden="true"
+            ></i>
+          </div>
+        </app-card>
+      }
+    </section>
+  }
+</main>

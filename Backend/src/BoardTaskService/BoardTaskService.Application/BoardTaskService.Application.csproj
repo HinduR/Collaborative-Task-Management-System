@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared.Common\Shared.Common.csproj" />
+    <ProjectReference Include="..\..\Shared.Grpc\Shared.Grpc.csproj" />
+    <ProjectReference Include="..\..\Shared.Logging\Shared.Logging.csproj" />
+    <ProjectReference Include="..\BoardTaskService.Domain\BoardTaskService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

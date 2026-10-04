@@ -1,0 +1,116 @@
+<section class="workflow-column-manager">
+  <div
+    class="column-list"
+    cdkDropList
+    cdkDropListOrientation="vertical"
+    [cdkDropListData]="editableColumns"
+    [cdkDropListDisabled]="disabled"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (column of editableColumns; track column.id) {
+      <div
+        class="column-item"
+        cdkDrag
+        [cdkDragData]="column"
+        [cdkDragDisabled]="disabled"
+      >
+        <app-button
+          [buttonId]="'reorder-workflow-column-button-' + column.id"
+          label=""
+          icon="pi pi-bars"
+          styleClass="drag-handle"
+          cdkDragHandle
+          [disabled]="disabled"
+          [ariaLabel]="'Reorder ' + (column.name || 'new column')"
+        />
+
+        <div class="column-name-field">
+          <label [for]="'workflow-column-name-' + column.id">
+            Column name
+          </label>
+
+          <input
+            [id]="'workflow-column-name-' + column.id"
+            type="text"
+            maxlength="100"
+            autocomplete="off"
+            placeholder="Enter column name"
+            [(ngModel)]="column.name"
+            [ngModelOptions]="{
+              standalone: true,
+            }"
+            [disabled]="disabled"
+            (ngModelChange)="onColumnNameChange()"
+          />
+        </div>
+        <div class="column-role-field">
+          <label [for]="'workflow-column-roles-' + column.id">
+            Allowed roles
+          </label>
+
+          <app-multi-select
+            [inputId]="'workflow-column-roles-' + column.id"
+            placeholder="Select allowed roles"
+            [options]="roleOptions"
+            [control]="column.roleControl"
+          />
+
+          <small class="field-help"> Leave empty to allow all roles. </small>
+        </div>
+
+        <app-button
+          [buttonId]="'delete-workflow-column-button-' + column.id"
+          label=""
+          icon="pi pi-trash"
+          styleClass="delete-button"
+          [disabled]="disabled || column.taskCount > 0"
+          [ariaLabel]="'Delete ' + (column.name || 'new column')"
+          (buttonClick)="deleteColumn(column.id)"
+        />
+      </div>
+    } @empty {
+      <div class="empty-columns">
+        <i class="pi pi-columns" aria-hidden="true"></i>
+
+        <p>No workflow columns have been added.</p>
+      </div>
+    }
+  </div>
+
+  <div class="add-column-section">
+    <app-button
+      buttonId="add-workflow-column-button"
+      label="Add Column"
+      icon="pi pi-plus"
+      severity="secondary"
+      [disabled]="!canAddColumn"
+      (buttonClick)="addColumn()"
+    />
+  </div>
+
+  @if (validationMessage) {
+    <p class="validation-message" role="alert">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+      {{ validationMessage }}
+    </p>
+  }
+
+  <div class="workflow-column-actions">
+    <app-button
+      buttonId="cancel-workflow-column-button"
+      label="Cancel"
+      severity="secondary"
+      [disabled]="disabled"
+      (buttonClick)="cancel()"
+    />
+
+    <app-button
+      buttonId="save-workflow-columns-button"
+      label="Save Changes"
+      icon="pi pi-check"
+      [disabled]="!canSave"
+      (buttonClick)="save()"
+    />
+  </div>
+</section>

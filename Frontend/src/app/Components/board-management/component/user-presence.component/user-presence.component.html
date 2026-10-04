@@ -1,0 +1,43 @@
+<div
+  class="presence"
+  aria-label="Users currently viewing this board"
+>
+  <span class="presence-label">
+    Active
+  </span>
+
+  <div class="presence-users">
+    @for (
+      user of users().slice(0, 4);
+      track user.userId
+    ) {
+      <div
+        class="presence-user"
+        [title]="user.userName"
+      >
+        <span class="presence-status"></span>
+
+        <span class="presence-avatar">
+          {{ getInitial(user.userName) }}
+        </span>
+
+        <span class="presence-name">
+          {{ user.userName }}
+        </span>
+      </div>
+    } @empty {
+      <span class="presence-empty">
+        No active users
+      </span>
+    }
+
+    @if (users().length > 4) {
+      <span
+        class="presence-more"
+        [title]="getRemainingUserNames(users())"
+      >
+        +{{ users().length - 4 }}
+      </span>
+    }
+  </div>
+</div>

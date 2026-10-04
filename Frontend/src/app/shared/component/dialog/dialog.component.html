@@ -1,0 +1,27 @@
+<p-dialog
+  [id]="dialogId"
+  [header]="title"
+  [visible]="visible"
+  [modal]="modal"
+  [closable]="closable"
+  [closeOnEscape]="closeOnEscape"
+  [dismissableMask]="dismissableMask"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: width }"
+  [breakpoints]="{
+    '48rem': '90vw',
+    '36rem': '95vw',
+  }"
+  (visibleChange)="onVisibleChange($event)"
+>
+  <div class="dialog-content">
+    <ng-content />
+  </div>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <ng-content select="[dialogFooter]" />
+    </div>
+  </ng-template>
+</p-dialog>

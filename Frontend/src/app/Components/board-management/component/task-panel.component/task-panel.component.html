@@ -1,0 +1,271 @@
+<div class="task-panel-overlay" (click)="cancel()"></div>
+
+<aside class="task-panel" role="dialog" aria-modal="true" aria-labelledby="task-panel-title">
+  <header class="task-panel-header">
+    <div>
+      <p class="task-panel-label">Task Management</p>
+
+      <h2 id="task-panel-title">{{ panelTitle }}</h2>
+    </div>
+
+    <app-button
+      buttonId="close-task-panel-button"
+      label=""
+      icon="pi pi-times"
+      styleClass="close-button"
+      [ariaLabel]="'Close ' + panelTitle"
+      [disabled]="isSaving"
+      (buttonClick)="cancel()"
+    />
+  </header>
+
+  <div class="task-panel-body">
+    @if (isLoadingOptions) {
+      <div class="loading-state" role="status" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+
+        <span>Loading task options...</span>
+      </div>
+    }
+
+    <div class="form-field">
+      <label for="task-title"> Task title </label>
+
+      <input
+        id="task-title"
+        type="text"
+        maxlength="200"
+        autocomplete="off"
+        placeholder="Enter task title"
+        [(ngModel)]="taskForm.title"
+        [disabled]="isFormDisabled"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="task-description"> Description </label>
+
+      <textarea
+        id="task-description"
+        rows="4"
+        placeholder="Enter task description"
+        [(ngModel)]="taskForm.description"
+        [disabled]="isFormDisabled"
+      ></textarea>
+    </div>
+
+    <div class="form-field">
+      <app-dropdown
+        dropdownId="task-priority"
+        label="Priority"
+        placeholder="Select priority"
+        [options]="priorityOptions"
+        [value]="taskForm.priorityRefTermKey"
+        [required]="true"
+        [disabled]="isLoadingOptions || isFormDisabled"
+        (valueChange)="taskForm.priorityRefTermKey = $event"
+      />
+    </div>
+
+    <div class="form-field">
+      <app-dropdown
+        dropdownId="task-type"
+        label="Task type"
+        placeholder="Select task type"
+        [options]="taskTypeOptions"
+        [value]="taskForm.taskTypeRefTermKey"
+        [required]="true"
+        [disabled]="isLoadingOptions || isFormDisabled"
+        (valueChange)="taskForm.taskTypeRefTermKey = $event"
+      />
+    </div>
+
+    <div class="form-field">
+      <app-dropdown
+        dropdownId="task-workflow-column"
+        label="Workflow column"
+        placeholder="Select workflow column"
+        [options]="workflowColumnOptions"
+        [value]="taskForm.workflowColumnId"
+        [required]="true"
+        [disabled]="isFormDisabled"
+        (valueChange)="taskForm.workflowColumnId = $event"
+      />
+    </div>
+
+    <div class="form-field">
+      <app-dropdown
+        dropdownId="task-assignee"
+        label="Assignee"
+        placeholder="Unassigned"
+        [options]="assigneeOptions"
+        [value]="taskForm.assigneeUserId"
+        [disabled]="isFormDisabled"
+        (valueChange)="taskForm.assigneeUserId = $event"
+      />
+    </div>
+    @if (isTaskMode && task) {
+      <section class="comments-section">
+        <div class="comments-header">
+          <h3>Comments</h3>
+
+          <span>{{ comments.length }}</span>
+        </div>
+
+        @if (isTaskMode) {
+          <div class="add-comment">
+            <textarea
+              id="new-task-comment"
+              rows="3"
+              maxlength="1000"
+              placeholder="Add a comment"
+              [(ngModel)]="newComment"
+              [disabled]="isSavingComment"
+            ></textarea>
+
+            <app-button
+              buttonId="add-task-comment-button"
+              label="Add Comment"
+              icon="pi pi-send"
+              [disabled]="isSavingComment || !newComment.trim()"
+              (buttonClick)="addComment()"
+            />
+          </div>
+        }
+
+        @if (comments.length === 0) {
+          <p class="empty-comments">No comments yet.</p>
+        } @else {
+          <div class="comment-list">
+            @for (comment of comments; track comment.id) {
+              <article class="comment-item">
+                <div class="comment-heading">
+                  <strong>{{ comment.createdByName }}</strong>
+
+                  @if (comment.isCommentOwner) {
+                    <div class="comment-actions">
+                      <app-button
+                        [buttonId]="'edit-comment-button-' + comment.id"
+                        label=""
+                        icon="pi pi-pencil"
+                        styleClass="comment-action-button"
+                        ariaLabel="Edit comment"
+                        [disabled]="isSavingComment"
+                        (buttonClick)="startEditingComment(comment)"
+                      />
+
+                      <app-button
+                        [buttonId]="'delete-comment-button-' + comment.id"
+                        label=""
+                        icon="pi pi-trash"
+                        styleClass="comment-action-button delete"
+                        ariaLabel="Delete comment"
+                        [disabled]="isSavingComment"
+                        (buttonClick)="openDeleteCommentDialog(comment)"
+                      />
+                    </div>
+                  }
+                </div>
+
+                @if (editingCommentId === comment.id) {
+                  <textarea
+                    [id]="'edit-comment-' + comment.id"
+                    rows="3"
+                    maxlength="1000"
+                    [(ngModel)]="editingCommentText"
+                    [disabled]="isSavingComment"
+                  ></textarea>
+
+                  <div class="edit-comment-actions">
+                    <app-button
+                      [buttonId]="'cancel-edit-comment-' + comment.id"
+                      label="Cancel"
+                      severity="secondary"
+                      [disabled]="isSavingComment"
+                      (buttonClick)="cancelEditingComment()"
+                    />
+
+                    <app-button
+                      [buttonId]="'save-edit-comment-' + comment.id"
+                      label="Save"
+                      [disabled]="isSavingComment || !editingCommentText.trim()"
+                      (buttonClick)="updateComment(comment)"
+                    />
+                  </div>
+                } @else {
+                  <p>{{ comment.comment }}</p>
+                }
+              </article>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    @if (errorMessage) {
+      <p class="validation-message" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+
+        {{ errorMessage }}
+      </p>
+    }
+  </div>
+
+  <footer class="task-panel-footer">
+    <app-button
+      buttonId="cancel-task-button"
+      [label]="isDetailsMode ? 'Close' : 'Cancel'"
+      severity="secondary"
+      [disabled]="isSaving"
+      (buttonClick)="cancel()"
+    />
+
+    @if (!isDetailsMode) {
+      <app-button
+        buttonId="save-task-button"
+        [label]="saveButtonLabel"
+        icon="pi pi-check"
+        [disabled]="isSaving || isLoadingOptions"
+        (buttonClick)="saveTask()"
+      />
+    }
+  </footer>
+</aside>
+<app-dialog
+  dialogId="delete-comment-dialog"
+  title="Delete Comment"
+  width="28rem"
+  [(visible)]="showDeleteCommentDialog"
+  [closable]="!isSavingComment"
+  [closeOnEscape]="!isSavingComment"
+  [dismissableMask]="false"
+  (closed)="cancelDeleteComment()"
+>
+  <div class="delete-comment-content">
+    <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+
+    <div>
+      <p>Are you sure you want to delete this comment?</p>
+      <small>This action cannot be undone.</small>
+    </div>
+  </div>
+
+  <div dialogFooter class="delete-comment-actions">
+    <app-button
+      buttonId="cancel-delete-comment-button"
+      label="Cancel"
+      severity="secondary"
+      [disabled]="isSavingComment"
+      (buttonClick)="cancelDeleteComment()"
+    />
+
+    <app-button
+      buttonId="confirm-delete-comment-button"
+      [label]="isSavingComment ? 'Deleting...' : 'Delete'"
+      icon="pi pi-trash"
+      severity="danger"
+      [disabled]="isSavingComment"
+      (buttonClick)="confirmDeleteComment()"
+    />
+  </div>
+</app-dialog>

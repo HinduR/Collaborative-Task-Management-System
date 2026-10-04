@@ -1,0 +1,47 @@
+:host ::ng-deep {
+  .shared-card {
+    border-left: 5px solid var(--color-slate-500);
+    background-color: var(--color-white);
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .shared-card:hover {
+    box-shadow: 0 4px 12px var(--shadow-black-md);
+    transform: translateY(-1px);
+  }
+
+  // Used when no type or an unknown type is passed.
+  .card-type-default {
+    border-left-color: var(--color-slate-500);
+    background-color: var(--color-slate-25);
+  }
+
+  .card-type-bug {
+    border-left-color: var(--color-red-600);
+    background-color: var(--color-red-50);
+  }
+
+  .card-type-feature {
+    border-left-color: var(--color-blue-600);
+    background-color: var(--color-blue-50);
+  }
+
+  .card-type-story {
+    border-left-color: var(--color-purple-600);
+    background-color: var(--color-purple-50);
+  }
+
+  .card-type-task {
+    border-left-color: var(--color-green-600);
+    background-color: var(--color-green-50);
+  }
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

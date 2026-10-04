@@ -1,0 +1,30 @@
+<button
+  pButton
+  class="shared-button {{ styleClass }}"
+  [class.shared-button-full-width]="fullWidth"
+  [class.shared-button-icon-only]="!label"
+  [id]="buttonId"
+  [type]="type"
+  [disabled]="disabled || loading"
+  [attr.title]="title || ariaLabel || label"
+  [attr.aria-label]="ariaLabel || label"
+  (click)="onClick($event)"
+>
+  @if (loading) {
+    <i class="pi pi-spin pi-spinner shared-button-icon"></i>
+  }
+
+  @if (!loading && icon && iconPosition === "left") {
+    <i [class]="icon + ' shared-button-icon'"></i>
+  }
+
+  @if (label) {
+    <span class="shared-button-label">
+      {{ label }}
+    </span>
+  }
+
+  @if (!loading && icon && iconPosition === "right") {
+    <i [class]="icon + ' shared-button-icon'"></i>
+  }
+</button>

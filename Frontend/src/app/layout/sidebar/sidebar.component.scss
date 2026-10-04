@@ -1,0 +1,69 @@
+:host {
+  display: block;
+  min-height: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+
+  width: 15rem;
+  height: 100%;
+  min-height: calc(100dvh - 3.5rem);
+  padding: 1rem 0.75rem;
+  overflow-y: auto;
+
+  background: var(--p-surface-0);
+  border-right: 0.0625rem solid var(--p-surface-200);
+
+  transition: width 0.2s ease;
+}
+
+.sidebar--collapsed {
+  width: 4.5rem;
+}
+
+.sidebar__navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+:host ::ng-deep .sidebar__navigation app-button,
+:host ::ng-deep .sidebar__navigation app-button button {
+  width: 100%;
+}
+
+:host ::ng-deep .sidebar__navigation app-button button.sidebar__button {
+  justify-content: flex-start;
+  color: var(--app-secondary-text-color) !important;
+  background: var(--app-transparent-color) !important;
+  border: 1px solid var(--app-transparent-color) !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .sidebar__navigation app-button button.sidebar__button:hover {
+  color: var(--p-primary-color) !important;
+  background: var(--p-primary-50) !important;
+}
+
+:host ::ng-deep .sidebar__navigation app-button button.sidebar__button--active {
+  color: var(--p-primary-color) !important;
+  background: var(--p-primary-50) !important;
+  border-color: var(--p-primary-100) !important;
+  font-weight: 700 !important;
+}
+
+:host ::ng-deep .sidebar--collapsed app-button button {
+  justify-content: center;
+}
+
+@media (width <= 48rem) {
+  .sidebar {
+    width: 15rem;
+  }
+
+  .sidebar--collapsed {
+    display: none;
+  }
+}

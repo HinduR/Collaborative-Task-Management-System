@@ -1,0 +1,21 @@
+<main class="login-page">
+  <section class="login-card">
+    <div class="app-logo">RT</div>
+
+    <h1>The Round Table</h1>
+
+    <p class="subtitle">Collaborative Task Management Board</p>
+
+    <app-button
+      buttonId="google-login-button"
+      type="button"
+      [label]="isRedirecting ? 'Redirecting...' : 'Continue with Google'"
+      icon="pi pi-google"
+      styleClass="google-button"
+      [disabled]="isRedirecting"
+      (buttonClick)="loginWithGoogle()"
+    />
+
+    <p class="help-text">Sign in using your assigned Google account.</p>
+  </section>
+</main>

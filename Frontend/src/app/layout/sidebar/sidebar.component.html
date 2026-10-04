@@ -1,0 +1,20 @@
+<aside class="sidebar" [class.sidebar--collapsed]="collapsed" aria-label="Main navigation">
+  <nav class="sidebar__navigation">
+    @for (item of navigationItems; track item.route) {
+      @if (canDisplay(item)) {
+        <app-button
+          [buttonId]="'sidebar-' + item.id"
+          [label]="collapsed ? '' : item.label"
+          [icon]="item.icon"
+          [title]="collapsed ? item.label : ''"
+          [styleClass]="
+            isActive(item)
+              ? 'sidebar__button sidebar__button--active'
+              : 'sidebar__button'
+          "
+          (buttonClick)="navigateTo(item)"
+        />
+      }
+    }
+  </nav>
+</aside>

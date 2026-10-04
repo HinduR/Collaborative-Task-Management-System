@@ -1,0 +1,13 @@
+<p-card
+  [header]="title"
+  [subheader]="subtitle"
+  [styleClass]="cardStyleClass"
+>
+  <ng-content></ng-content>
+
+  <ng-template #footer>
+    <div class="card-footer">
+      <ng-content select="[card-footer]"></ng-content>
+    </div>
+  </ng-template>
+</p-card>

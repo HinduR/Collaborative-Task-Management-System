@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+@use './styles/variables';
+@import "primeicons/primeicons.css";
+
+html,
+body {
+  min-height: 100dvh;
+  margin: 0;
+  color: var(--app-text-color);
+  background: var(--app-background-color);
+}
+
+app-root {
+  display: block;
+  min-height: 100dvh;
+  color: var(--app-text-color);
+  background: var(--app-background-color);
+}
+
+body {
+  color-scheme: light;
+}
+
+html.app-dark body {
+  color-scheme: dark;
+}

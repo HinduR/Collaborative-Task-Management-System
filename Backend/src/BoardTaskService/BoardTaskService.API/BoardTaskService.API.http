@@ -1,0 +1,6 @@
+@BoardTaskService.API_HostAddress = http://localhost:5264
+
+GET {{BoardTaskService.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,41 @@
+<header class="header">
+  <div class="header__start">
+    <app-button
+      buttonId="toggle-sidebar-button"
+      label=""
+      icon="pi pi-bars"
+      title="Toggle navigation menu"
+      (buttonClick)="onSidebarToggle()"
+    />
+
+    <a class="header__brand" routerLink="/projects" aria-label="Go to projects">
+      <span class="header__application-name">
+        {{ applicationName }}
+      </span>
+    </a>
+  </div>
+
+  <div class="header__end">
+    <span class="header__user-name">
+      {{ userName }}
+    </span>
+
+    <app-button
+      buttonId="theme-toggle-button"
+      label=""
+      [icon]="themeToggleIcon"
+      [title]="themeToggleLabel"
+      [ariaLabel]="themeToggleLabel"
+      styleClass="header__theme-toggle"
+      (buttonClick)="onThemeToggle()"
+    />
+
+    <app-button
+      buttonId="header-logout-button"
+      label="Logout"
+      icon="pi pi-sign-out"
+      title="Log out"
+      (buttonClick)="onLogout()"
+    />
+  </div>
+</header>
